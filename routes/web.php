@@ -9,7 +9,7 @@ Route::get('/', function () {
 Route::get('/jobs', function () {
 
     return view('jobs.index', [
-        'jobs' => Job::with('employer')->latest()->paginate(3)
+        'jobs' => Job::with('employer')->latest()->simplePaginate(3)
     ]);
 });
 
@@ -18,6 +18,12 @@ Route::get('/jobs/create', function () {
 });
 
 Route::post('/jobs', function () {
+    request()->validate([
+        'title' => ['required', 'min:3'],
+        'salary' => ['required', 'min:3', 'numeric'],
+    ]);
+
+
     Job::create([
         'title' => request('title'),
         'salary' => request('salary'),
