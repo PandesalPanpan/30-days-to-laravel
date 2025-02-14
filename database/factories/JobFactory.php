@@ -20,7 +20,7 @@ class JobFactory extends Factory
         return [
             //
             'title' => $this->faker->jobTitle(),
-            'salary' => $this->faker->randomFloat(2, 1000, 90000),
+            'salary' => '$50,000',
             'employer_id' => Employer::factory(),
         ];
     }
