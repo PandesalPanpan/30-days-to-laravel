@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\JobPostedMail;
 use App\Models\Job;
-use App\Models\User;
-use Illuminate\Support\Facades\Gate;
 
 class JobController extends Controller
 {
@@ -26,17 +25,21 @@ class JobController extends Controller
 
     public function store()
     {
-        request()->validate([
+        $validatedAttributes = request()->validate([
             'title' => ['required', 'min:3'],
-            'salary' => ['required', 'min:3', 'numeric'],
+            'salary' => ['required'],
         ]);
 
 
-        Job::create([
+        $job = Job::create([
             'title' => request('title'),
             'salary' => request('salary'),
             'employer_id' => 1,
         ]);
+
+        // Send email
+        \Mail::to(auth()->user())->send(new JobPostedMail($job));
+
         return redirect('/jobs');
     }
 
