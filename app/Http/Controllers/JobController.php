@@ -25,7 +25,7 @@ class JobController extends Controller
 
     public function store()
     {
-        $validatedAttributes = request()->validate([
+        request()->validate([
             'title' => ['required', 'min:3'],
             'salary' => ['required'],
         ]);
@@ -38,7 +38,8 @@ class JobController extends Controller
         ]);
 
         // Send email
-        \Mail::to(auth()->user())->send(new JobPostedMail($job));
+        \Mail::to($job->employer->user)->queue(new JobPostedMail($job));
+        // \Mail::to(auth()->user())->queue(new JobPostedMail($job));
 
         return redirect('/jobs');
     }
